@@ -2,6 +2,7 @@ import os
 import re
 import urllib.request
 from bs4 import BeautifulSoup
+import pandas as pd
 
 PATTERN_PROTOCOL_REGEX = "http[s]?://"
 ROOT_FOLDER_PATH = "./Data"
@@ -61,7 +62,7 @@ def save_html_file(root_folder_path, url_string):
 
 
 # The last one element must be True if the web site use relative path, otherwise False
-def save_website(root_folder_path, url_string, relative_path_online, visited_pages):
+def save_website(root_folder_path, url_string, relative_path_online, visited_pages, data):
     if isinstance(root_folder_path, str) and isinstance(url_string, str) and isinstance(relative_path_online, bool):
         url = urllib.request.urlopen(url_string)
         soup = BeautifulSoup(url, "html.parser")
@@ -92,21 +93,92 @@ def save_website(root_folder_path, url_string, relative_path_online, visited_pag
                     if i > N_MAX:
                         break
 
-                    pippo(link_string)
-                    save_website(root_folder_path, link_string, relative_path_online, visited_pages)
+                    pippo(link_string, data)
+                    save_website(root_folder_path, link_string, relative_path_online, visited_pages, data)
 
     else:
         raise ValueError("The first two values of the function must be strings, the last one must be bool")
 
-def pippo(url_string):
+def pippo(url_string, data):
     if isinstance(url_string, str):
         url = urllib.request.urlopen(url_string)
         soup = BeautifulSoup(url, "html.parser")
 
+        car = [None for i in range(7)]
+        flag = [False for i in range(7)]
         for list in soup.findAll("ul", class_="c-featureslist c-featureslist--style1"):
             for childList in list.findChildren("li"):
-                for childElement in childList.findChildren("strong"):
-                    print(childElement.text)
+                string = childList.text
+                tokenized_string = string.split(":")
+
+                for string in tokenized_string:
+                    if flag[0]:
+                        car[0] = string
+                        print(car[0])
+                        flag[0] = False
+                        break
+
+                    if flag[1]:
+                        car[1] = string
+                        flag[1] = False
+                        break
+
+                    if flag[2]:
+                        car[2] = string
+                        flag[2] = False
+                        break
+
+                    if flag[3]:
+                        car[3] = string
+                        flag[3] = False
+                        break
+
+                    if flag[4]:
+                        car[4] = string
+                        flag[4] = False
+                        break
+
+                    if flag[5]:
+                        car[5] = string
+                        flag[5] = False
+                        break
+
+                    if flag[6]:
+                        car[6] = string
+                        flag[6] = False
+                        break
+
+                    if string == "Modello":
+                        flag[0] = True
+                        break
+
+                    if string == "Posti":
+                        flag[1] = True
+                        break
+
+                    if string == "Porte":
+                        flag[2] = True
+                        break
+
+                    if string == "Alimentazione":
+                        flag[3] = True
+                        break
+
+                    if string == "Cilindrata":
+                        flag[4] = True
+                        break
+
+                    if string == "Velocità Massima":
+                        flag[5] = True
+                        break
+
+                    if string == "Accelerazione":
+                        flag[6] = True
+                    break
+
+        print(car)
+
+
 
     else:
         raise ValueError("")
@@ -114,4 +186,6 @@ def pippo(url_string):
 
 visited_pages = set()
 create_folders(ROOT_FOLDER_PATH)
-save_website(ROOT_FOLDER_PATH, ROOT_URL, True, visited_pages)
+data = pd.DataFrame(columns=["Modello", "Posti", "Porte"])
+print(data)
+save_website(ROOT_FOLDER_PATH, ROOT_URL, True, visited_pages, data)
