@@ -9,6 +9,12 @@ ROOT_FOLDER_PATH = "./Data"
 ROOT_URL = "https://www.quattroruote.it/tutte-le-auto/ricerca-per-marca.html"
 N_MAX = 2
 
+def removeSpaces(string):
+    if isinstance(string, str):
+        return string.replace("\n", "").replace("\t", "").replace(" ", "")
+    else:
+        raise ValueError("The object that was passed was not a string")
+
 
 def remove_protocol_url(url):
     if isinstance(url, str):
@@ -104,81 +110,67 @@ def pippo(url_string, data):
         url = urllib.request.urlopen(url_string)
         soup = BeautifulSoup(url, "html.parser")
 
-        car = [None for i in range(7)]
-        flag = [False for i in range(7)]
-        for list in soup.findAll("ul", class_="c-featureslist c-featureslist--style1"):
-            for childList in list.findChildren("li"):
-                string = childList.text
-                tokenized_string = string.split(":")
+        car = [None for i in range(11)]
+        flag = False
 
-                for string in tokenized_string:
-                    if flag[0]:
-                        car[0] = string
-                        print(car[0])
-                        flag[0] = False
-                        break
+        try:
 
-                    if flag[1]:
-                        car[1] = string
-                        flag[1] = False
-                        break
+            vote = removeSpaces(soup.find("span", {'id': "votesMedia"}).text)
 
-                    if flag[2]:
-                        car[2] = string
-                        flag[2] = False
-                        break
+            if not vote:
+                print(vote)
+                for list in soup.findAll("ul", class_="c-featureslist c-featureslist--style1"):
+                    for childList in list.findChildren("li"):
+                        string = removeSpaces(childList.text)
 
-                    if flag[3]:
-                        car[3] = string
-                        flag[3] = False
-                        break
+                        if ":" not in string and not flag:
+                            string = "Alimentazione:" + string
+                            flag = True
 
-                    if flag[4]:
-                        car[4] = string
-                        flag[4] = False
-                        break
+                        tokenized_string = string.split(":")
 
-                    if flag[5]:
-                        car[5] = string
-                        flag[5] = False
-                        break
+                        for string in tokenized_string:
 
-                    if flag[6]:
-                        car[6] = string
-                        flag[6] = False
-                        break
+                            if string == "Modello":
+                                car[0] = tokenized_string[1]
+                                break
 
-                    if string == "Modello":
-                        flag[0] = True
-                        break
+                            if string == "Posti":
+                                car[1] = tokenized_string[1]
+                                break
 
-                    if string == "Posti":
-                        flag[1] = True
-                        break
+                            if string == "Porte":
+                                car[2] = tokenized_string[1]
+                                break
 
-                    if string == "Porte":
-                        flag[2] = True
-                        break
+                            if string == "Alimentazione":
+                                car[3] = tokenized_string[1]
+                                break
 
-                    if string == "Alimentazione":
-                        flag[3] = True
-                        break
+                            if string == "Cilindrata":
+                                car[4] = tokenized_string[1]
+                                break
 
-                    if string == "Cilindrata":
-                        flag[4] = True
-                        break
+                            if string == "Velocitàmax":
+                                car[5] = tokenized_string[1]
+                                break
 
-                    if string == "Velocità Massima":
-                        flag[5] = True
-                        break
+                            if string == "Serbatoio":
+                                car[6] = tokenized_string[1]
+                                break
 
-                    if string == "Accelerazione":
-                        flag[6] = True
-                    break
+                            if string == "Omologazione":
+                                car[7] = tokenized_string[1]
+                                break
 
-        print(car)
-
-
+                            if string == "Accelerazione0-100Km/h":
+                                car[8] = tokenized_string[1]
+                                break
+                    print(car)
+        except:
+            print("i")
+        # Name of the car
+        #print(soup.find("h1", id="page-main-title").findChild().text)
 
     else:
         raise ValueError("")
@@ -186,6 +178,7 @@ def pippo(url_string, data):
 
 visited_pages = set()
 create_folders(ROOT_FOLDER_PATH)
-data = pd.DataFrame(columns=["Modello", "Posti", "Porte"])
+data = pd.DataFrame(columns=["Macchina", "Modello", "Posti", "Porte", "Alimentazione", "Cilindrata", "Velocità Max",
+                             "Serbatoio", "Omologazione", "Accelerazione 0-100Km/h"])
 print(data)
 save_website(ROOT_FOLDER_PATH, ROOT_URL, True, visited_pages, data)
