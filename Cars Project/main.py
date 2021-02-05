@@ -1,13 +1,15 @@
 import pandas as pd
 
-cars = pd.read_csv("../data/Cars.csv", index_col=0)
+cars = pd.read_csv("../data/pippo2.csv", index_col=0)
 # sns.heatmap(auto.corr())
 # plt.show()
-cars.drop(columns=["torque"], inplace=True)
-cars = pd.get_dummies(cars, columns=["fuel"])
-cars = pd.get_dummies(cars, columns=["transmission"])
-cars = pd.get_dummies(cars, columns=["owner"])
-cars = pd.get_dummies(cars, columns=["seller_type"])
+
+#cars.drop(columns=["torque"], inplace=True)
+
+#cars = pd.get_dummies(cars, columns=["fuel"])
+#cars = pd.get_dummies(cars, columns=["transmission"])
+#cars = pd.get_dummies(cars, columns=["owner"])
+#cars = pd.get_dummies(cars, columns=["seller_type"])
 
 myList = list()
 for power in cars["max_power (bhp)"]:
@@ -24,4 +26,4 @@ cars.drop(columns=["max_power (bhp)"], inplace=True)
 cars["max_power (bhp)"] = myList
 cars.info()
 print(cars["max_power (bhp)"])
-# cars.to_csv(path_or_buf="C:\Desktop\Progetto ICON\pippo.csv")
+#cars.to_csv(path_or_buf="C:\\Users\\WinEnzo\\Desktop\\Corona\\data\\pippo2.csv")
