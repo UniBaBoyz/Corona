@@ -9,7 +9,7 @@ from sklearn.metrics import r2_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-SIZE = 0.2
+SIZE = 0.3
 
 cars = pd.read_csv("../data/Cars.csv")
 cars.dropna(inplace=True)
@@ -17,21 +17,39 @@ cars.dropna(inplace=True)
 cols = ["selling_price", "transmission_Automatic", "transmission_Manual", "max_power (bhp)"]
 sns.heatmap(cars[cols].corr(), annot=True, annot_kws={'size': 12})
 sns.pairplot(cars[cols])
-plt.show()
+# plt.show()
 
-Y = cars['selling_price'].values
+
 X = cars[cols].drop(['selling_price'], axis=1).values
-ss = StandardScaler()
-X = ss.fit_transform(X)
+Y = cars['selling_price'].values
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=SIZE)
 
-model = LinearRegression()
-model.fit(X_train, Y_train)
-car_price_test = model.predict(X_test)
+ss = StandardScaler()
+X_train_poly = ss.fit_transform(X_train)
+X_test_poly = ss.transform(X_test)
 
-print(mean_squared_error(Y_test, car_price_test))
-print(r2_score(Y_test, car_price_test))
+model = LinearRegression()
+model.fit(X_train_poly, Y_train)
+car_price_train = model.predict(X_train_poly)
+
+mse = mean_squared_error(Y_train, car_price_train)
+r2 = r2_score(Y_train, car_price_train)
+print("Train Set: " + "MSE: " + str(mse) + "R2: " + str(r2))
+
+"""for i in range(1, 11):
+    polyfeats = PolynomialFeatures(degree=i)
+    X_train_poly = polyfeats.fit_transform(X_train)
+    X_test_poly = polyfeats.transform(X_test)
+
+    model = LinearRegression()
+    model.fit(X_train_poly, Y_train)
+    car_price_test = model.predict(X_test)
+
+    mse = mean_squared_error(Y_test, car_price_test)
+    r2 = r2_score(Y_test, car_price_test)
+    print("DEGREE: " + str(i) + "MSE: " + str(mse) + "R2: " + str(r2))
+    """
 
 # plt.scatter(X_train, Y_train, c="green", edgecolors="white", label="TrainSet")
 
