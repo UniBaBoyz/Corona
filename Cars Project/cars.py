@@ -5,6 +5,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 
 # RFE
 from sklearn.feature_selection import RFE
@@ -79,18 +82,12 @@ num_vars = ['wheelbase', 'curbweight', 'enginesize', 'boreratio', 'horsepower', 
 df_train[num_vars] = scaler.fit_transform(df_train[num_vars])
 
 # Dividing data into X and y variables
-y_train = df_train.pop('price')
+Y_train = df_train.pop('price')
 X_train = df_train
 
-lm = LinearRegression()
-lm.fit(X_train, y_train)
-
-# Search the top correlated features
-rfe = RFE(lm, 10)
-rfe = rfe.fit(X_train, y_train)
-
-X_train_rfe = X_train[X_train.columns[rfe.support_]]
-
+# Dividing into X and y
+Y_test = df_test.pop('price')
+X_test = df_test
 
 def build_model(X, y):
     X = sm.add_constant(X)  # Adding the constant
@@ -106,3 +103,19 @@ def checkVIF(X):
     vif['VIF'] = round(vif['VIF'], 2)
     vif = vif.sort_values(by="VIF", ascending=False)
     return vif
+
+lm = LinearRegression()
+lm.fit(X_train, Y_train)
+Y_pred_test = lm.predict(X_test)
+
+# Search the top correlated features
+rfe = RFE(lm, 10)
+rfe = rfe.fit(X_train, Y_train)
+
+X_train_rfe = X_train[X_train.columns[rfe.support_]]
+
+#X_train_new = build_model(X_train_rfe, Y_train)
+
+
+print("\nMean squared error pred: ", mean_squared_error(Y_test, Y_pred_test))
+print("\nRegression score pred: ", r2_score(Y_test, Y_pred_test))
