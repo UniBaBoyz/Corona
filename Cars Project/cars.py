@@ -1,21 +1,12 @@
-import warnings
-
 # importing the libraries
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import r2_score
-
-# RFE
-from sklearn.feature_selection import RFE
-from sklearn.linear_model import LinearRegression
-import statsmodels.api as sm
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-warnings.filterwarnings('ignore')
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import mean_squared_log_error, r2_score, accuracy_score
 
 cars = pd.read_csv('../data/CarPrice_Assignment.csv')
 
@@ -71,51 +62,67 @@ cars_lr = dummies('enginetype', cars_lr)
 cars_lr = dummies('cylindernumber', cars_lr)
 cars_lr = dummies('carsrange', cars_lr)
 
+num_vars = ['curbweight', 'enginesize', 'horsepower', 'carwidth', 'Highend']
+
+Y = cars_lr['price'].values
+X = cars_lr[num_vars].values
+
 # train and test split
 np.random.seed(0)
-df_train, df_test = train_test_split(cars_lr, train_size=0.7, test_size=0.3, random_state=100)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, train_size=0.7, test_size=0.3, random_state=100)
 
 # Standardization
-scaler = MinMaxScaler()
-num_vars = ['wheelbase', 'curbweight', 'enginesize', 'boreratio', 'horsepower', 'fueleconomy', 'carlength', 'carwidth',
-            'price']
-df_train[num_vars] = scaler.fit_transform(df_train[num_vars])
+ss = StandardScaler()
+X_train = ss.fit_transform(X_train)
+X_test = ss.transform(X_test)
 
-# Dividing data into X and y variables
-Y_train = df_train.pop('price')
-X_train = df_train
+def try_model(model,parameters, X_train, Y_train, X_test, Y_test):
+    mod = GridSearchCV(model, parameters, cv=None)
+    mod.fit(X_train, Y_train)
+    Y_pred_test = mod.predict(X_test)
+    Y_pred_train_test = mod.predict(X_train)
 
-# Dividing into X and y
-Y_test = df_test.pop('price')
-X_test = df_test
+    print("\nMean squared log error test: ", mean_squared_log_error(Y_test, Y_pred_test))
+    print("\nRegression score pred test: ", r2_score(Y_test, Y_pred_test))
 
-def build_model(X, y):
-    X = sm.add_constant(X)  # Adding the constant
-    lm = sm.OLS(y, X).fit()  # fitting the model
-    print(lm.summary())  # model summary
-    return X
+    print("\nMean squared log error train: ", mean_squared_log_error(Y_train, Y_pred_train_test))
+    print("\nRegression score pred train: ", r2_score(Y_train, Y_pred_train_test))
 
-
-def checkVIF(X):
-    vif = pd.DataFrame()
-    vif['Features'] = X.columns
-    vif['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-    vif['VIF'] = round(vif['VIF'], 2)
-    vif = vif.sort_values(by="VIF", ascending=False)
-    return vif
-
-lm = LinearRegression()
-lm.fit(X_train, Y_train)
-Y_pred_test = lm.predict(X_test)
-
-# Search the top correlated features
-rfe = RFE(lm, 10)
-rfe = rfe.fit(X_train, Y_train)
-
-X_train_rfe = X_train[X_train.columns[rfe.support_]]
-
-#X_train_new = build_model(X_train_rfe, Y_train)
+    # EVALUATION OF THE MODEL
+    # Plotting y_test and y_pred to understand the spread.
+    fig = plt.figure()
+    plt.scatter(Y_test, Y_pred_test)
+    fig.suptitle('y_test vs y_pred', fontsize=20)  # Plot heading
+    plt.xlabel('y_test', fontsize=18)  # X-label
+    plt.ylabel('y_pred', fontsize=16)
+    plt.show()
 
 
-print("\nMean squared error pred: ", mean_squared_error(Y_test, Y_pred_test))
-print("\nRegression score pred: ", r2_score(Y_test, Y_pred_test))
+
+parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False]}
+print("\nRegressione Lineare")
+try_model(LinearRegression(), parameters, X_train, Y_train, X_test, Y_test)
+
+parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
+              'precompute':[True, False], 'max_iter':[i for i in range (1000,10000,500)], 'warm_start':[True, False],
+              'positive':[True, False], 'selection':['cyclic','random']}
+print("\n\nModello Lasso")
+try_model(Lasso(), parameters, X_train, Y_train, X_test, Y_test)
+
+parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
+              'max_iter':[i for i in range (1000,10000,500)],
+              'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
+print("\n\nModello Ridge")
+try_model(Ridge(), parameters, X_train, Y_train, X_test, Y_test)
+
+parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
+              'n_iter':[i for i in range (300,2000,100)], 'compute_score':[True, False]}
+print("\n\nModello Bayesiano")
+try_model(BayesianRidge(), parameters, X_train, Y_train, X_test, Y_test)
+
+parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False]}
+print("\n\nRegressione Polinomiale di grado ",2)
+polyfeats = PolynomialFeatures(degree=2)
+X_train_poly = polyfeats.fit_transform(X_train)
+X_test_poly = polyfeats.transform(X_test)
+try_model(LinearRegression(), parameters, X_train_poly, Y_train, X_test_poly, Y_test)
