@@ -1,14 +1,14 @@
 # importing the libraries
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
+from sklearn.metrics import mean_squared_log_error, r2_score
+from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import mean_squared_log_error, r2_score, accuracy_score
 
-cars = pd.read_csv('../data/CarPrice_Assignment.csv')
+cars = pd.read_csv('../data/CarPrice.csv')
 
 # Splitting company name from CarName column
 CompanyName = cars['CarName'].apply(lambda x: x.split(' ')[0])

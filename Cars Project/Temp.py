@@ -1,19 +1,18 @@
 import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
-from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 TEST_SIZE = 0.2
 
-cars = pd.read_csv("../data/CarPrice_Assignment.csv")
+cars = pd.read_csv("../data/CarPrice.csv")
 
 Y = cars["selling_price"].values
 X = cars.drop(labels="selling_price", axis=1)
 X.info()
-#X = pd.get_dummies()
+# X = pd.get_dummies()
 X_copy = X
 
 X = StandardScaler().fit_transform(X)
