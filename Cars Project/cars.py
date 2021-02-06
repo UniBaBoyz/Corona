@@ -76,7 +76,8 @@ ss = StandardScaler()
 X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
-def try_model(model,parameters, X_train, Y_train, X_test, Y_test):
+
+def try_model(model, parameters, X_train, Y_train, X_test, Y_test):
     mod = GridSearchCV(model, parameters, cv=None)
     mod.fit(X_train, Y_train)
     Y_pred_test = mod.predict(X_test)
@@ -98,30 +99,30 @@ def try_model(model,parameters, X_train, Y_train, X_test, Y_test):
     plt.show()
 
 
-
-parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False]}
+parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
 print("\nRegressione Lineare")
 try_model(LinearRegression(), parameters, X_train, Y_train, X_test, Y_test)
 
-parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
-              'precompute':[True, False], 'max_iter':[i for i in range (1000,10000,500)], 'warm_start':[True, False],
-              'positive':[True, False], 'selection':['cyclic','random']}
+parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
+              'precompute': [True, False], 'max_iter': [i for i in range(1000, 10000, 500)],
+              'warm_start': [True, False],
+              'positive': [True, False], 'selection': ['cyclic', 'random']}
 print("\n\nModello Lasso")
 try_model(Lasso(), parameters, X_train, Y_train, X_test, Y_test)
 
-parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
-              'max_iter':[i for i in range (1000,10000,500)],
-              'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
+parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
+              'max_iter': [i for i in range(1000, 10000, 500)],
+              'solver': ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
 print("\n\nModello Ridge")
 try_model(Ridge(), parameters, X_train, Y_train, X_test, Y_test)
 
-parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False],
-              'n_iter':[i for i in range (300,2000,100)], 'compute_score':[True, False]}
+parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
+              'n_iter': [i for i in range(300, 2000, 100)], 'compute_score': [True, False]}
 print("\n\nModello Bayesiano")
 try_model(BayesianRidge(), parameters, X_train, Y_train, X_test, Y_test)
 
-parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False]}
-print("\n\nRegressione Polinomiale di grado ",2)
+parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
+print("\n\nRegressione Polinomiale di grado ", 2)
 polyfeats = PolynomialFeatures(degree=2)
 X_train_poly = polyfeats.fit_transform(X_train)
 X_test_poly = polyfeats.transform(X_test)
