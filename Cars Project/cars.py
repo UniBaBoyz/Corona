@@ -24,6 +24,7 @@ def replace_name(a, b):
 
 
 replace_name('maxda', 'mazda')
+replace_name('alfa-romero', 'alfa-romeo')
 replace_name('porcshce', 'porsche')
 replace_name('toyouta', 'toyota')
 replace_name('vokswagen', 'volkswagen')
@@ -77,11 +78,11 @@ ss = StandardScaler()
 X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
-
 def try_model(model, parameters, X_train, Y_train, X_test, Y_test):
     mod = GridSearchCV(model, parameters, cv=None)
     mod.fit(X_train, Y_train)
     return mod
+
 
 parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
 polyfeats = PolynomialFeatures(degree=2)
@@ -103,11 +104,11 @@ def valore_nullo(feature, a, min, max):
 # Acquisizione features in input
 print("\n-------------  FEATURES PER LA PREDIZIONE DEL PREZZO DELLA MACCHINA --------------")
 
-print("\nInserire il peso della macchina in Kg (MIN:1488 Kg, MAX:4066 Kg)")
+print("\nInserire il peso della macchina in libbre (MIN:1488 lb, MAX:4066 lb)")
 curbweight = valore_nullo(input(), cars_lr["curbweight"].values, 1488, 4066)
 print("----------------------------------------------------------------------------------")
 
-print("\nInserire la dimensione del motore in cc (MIN:61 cc, MAX:326 cc)")
+print("\nInserire la dimensione del motore in cubic inch (MIN:61 ci, MAX:326 ci)")
 enginesize = valore_nullo(input(), cars_lr["enginesize"].values, 61, 326)
 print("----------------------------------------------------------------------------------")
 
@@ -115,10 +116,35 @@ print("\nInserire la potenza dei cavalli in kW (MIN:48 kW, MAX:288 kW)")
 horsepower = valore_nullo(input(), cars_lr["horsepower"].values, 48, 288)
 print("----------------------------------------------------------------------------------")
 
-print("\nInserire la larghezza della macchina in pollici (MIN:60 pollici, MAX:72 pollici)")
+print("\nInserire la larghezza della macchina in inch (MIN:60 i, MAX:72 i)")
 carwidth = valore_nullo(input(), cars_lr["carwidth"].values, 60, 72)
+print("----------------------------------------------------------------------------------")
 
-highend = 0 #valore della mediana
+flag = True
+highend = 0
+while flag:
+    print("\nInserire il nome della societa' automobilistica (Es. audi)")
+    company = input()
+    companyName = cars["CompanyName"].values
+    listCompanyName = companyName.tolist()
+    try:
+        if (listCompanyName.index(company)) > 0:
+            flag = False
+    except:
+        print("Nome della societa' automobilistica non esiste!!!")
+        print("----------------------------------------------------------------------------------")
+
+for row in cars[["CompanyName", "carsrange"]].values:
+
+    companyname = row[0]
+    carsrange = str(row[1])
+
+    if companyname == company:
+        if(carsrange=="Highend"):
+            highend = 1
+        else:
+            highend = 0
+        break
 
 X_user = np.array([curbweight, enginesize, horsepower, carwidth, highend])
 X_user = X_user.reshape(1, -1)
@@ -126,19 +152,24 @@ X_user = ss.transform(X_user)
 X_user = polyfeats.transform(X_user)
 predict = mod.predict(X_user)
 
-print("\n")
-print("+---------------------------------------------------------------------------+")
-print("|                        PREDIZIONE PREZZO AUTO                             |")
-print("+---------------------------------------------------------------------------+")
-print("| curbweight ---> ", curbweight)
-print("+---------------------------------------------------------------------------+")
-print("| enginesize ---> ", enginesize)
-print("+---------------------------------------------------------------------------+")
-print("| horsepower ---> ", horsepower)
-print("+---------------------------------------------------------------------------+")
-print("| carwidth ---> ", carwidth)
-print("+---------------------------------------------------------------------------+")
-print("| highend ---> ", highend)
-print("+---------------------------------------------------------------------------+")
-print("| PRICE ---> ", round(predict[0], 2))
-print("+---------------------------------------------------------------------------+")
+if predict < 1000:
+    print("----------------------------------------------------------------------------------")
+    print("\nImpossibile calcolare prezzo con questi valori di features!!!")
+    print("----------------------------------------------------------------------------------")
+else:
+    print("\n")
+    print("+---------------------------------------------------------------------------+")
+    print("|                        PREDIZIONE PREZZO AUTO                             |")
+    print("+---------------------------------------------------------------------------+")
+    print("| curbweight ---> ", curbweight)
+    print("+---------------------------------------------------------------------------+")
+    print("| enginesize ---> ", enginesize)
+    print("+---------------------------------------------------------------------------+")
+    print("| horsepower ---> ", horsepower)
+    print("+---------------------------------------------------------------------------+")
+    print("| carwidth ---> ", carwidth)
+    print("+---------------------------------------------------------------------------+")
+    print("| highend ---> ", highend)
+    print("+---------------------------------------------------------------------------+")
+    print("| PRICE ---> ", round(predict[0], 2))
+    print("+---------------------------------------------------------------------------+")
