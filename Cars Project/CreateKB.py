@@ -51,6 +51,14 @@ file_data += "\n"
 for row in cars.itertuples():
     file_data += "companyModel(" + row[4] + "," + row[3] + ")\n"
 
+file_data += "\n"
+
+# Generating model - carbody
+for row in cars.itertuples():
+    file_data += "modelBody(" + row[3] + "," + row[8] + ")\n"
+
 knowledge_base = open(KNOWLEDGE_BASE_PATH, mode="w")
 knowledge_base.write(file_data)
 knowledge_base.close()
+
+print("File created in: ", KNOWLEDGE_BASE_PATH)
