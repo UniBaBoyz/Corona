@@ -486,4 +486,144 @@ modelBody("diesel","wagon").
 modelBody("144ea","sedan").
 modelBody("246","sedan").
 
-companyModel(X, Y) :- fuelCar(X, Y), fuel(Y).
+carsrange("giulia","medium").
+carsrange("stelvio","medium").
+carsrange("Quadrifoglio","medium").
+carsrange("100 ls","medium").
+carsrange("100ls","medium").
+carsrange("fox","medium").
+carsrange("5000","medium").
+carsrange("4000","medium").
+carsrange("5000s (diesel)","medium").
+carsrange("320i","highend").
+carsrange("x1","highend").
+carsrange("x3","highend").
+carsrange("z4","highend").
+carsrange("x4","highend").
+carsrange("x5","highend").
+carsrange("impala","budget").
+carsrange("monte carlo","budget").
+carsrange("vega 2300","budget").
+carsrange("rampage","budget").
+carsrange("challenger se","budget").
+carsrange("d200","budget").
+carsrange("monaco (sw)","budget").
+carsrange("colt hardtop","budget").
+carsrange("colt (sw)","budget").
+carsrange("coronet custom","budget").
+carsrange("dart custom","budget").
+carsrange("coronet custom (sw)","budget").
+carsrange("civic","budget").
+carsrange("civic cvcc","budget").
+carsrange("accord cvcc","budget").
+carsrange("accord lx","budget").
+carsrange("civic 1500 gl","budget").
+carsrange("accord","budget").
+carsrange("civic 1300","budget").
+carsrange("prelude","budget").
+carsrange("civic (auto)","budget").
+carsrange("MU-X","budget").
+carsrange("D-Max ","budget").
+carsrange("D-Max V-Cross","budget").
+carsrange("xj","highend").
+carsrange("xf","highend").
+carsrange("xk","highend").
+carsrange("rx3","medium").
+carsrange("glc deluxe","medium").
+carsrange("rx2 coupe","medium").
+carsrange("rx-4","medium").
+carsrange("626","medium").
+carsrange("glc","medium").
+carsrange("rx-7 gs","medium").
+carsrange("glc 4","medium").
+carsrange("glc custom l","medium").
+carsrange("glc custom","medium").
+carsrange("electra 225 custom","highend").
+carsrange("century luxus (sw)","highend").
+carsrange("century","highend").
+carsrange("skyhawk","highend").
+carsrange("opel isuzu deluxe","highend").
+carsrange("skylark","highend").
+carsrange("century special","highend").
+carsrange("regal sport coupe (turbo)","highend").
+carsrange("cougar","medium").
+carsrange("mirage","budget").
+carsrange("lancer","budget").
+carsrange("outlander","budget").
+carsrange("g4","budget").
+carsrange("mirage g4","budget").
+carsrange("montero","budget").
+carsrange("pajero","budget").
+carsrange("versa","medium").
+carsrange("gt-r","medium").
+carsrange("rogue","medium").
+carsrange("latio","medium").
+carsrange("titan","medium").
+carsrange("leaf","medium").
+carsrange("juke","medium").
+carsrange("note","medium").
+carsrange("clipper","medium").
+carsrange("nv200","medium").
+carsrange("dayz","medium").
+carsrange("fuga","medium").
+carsrange("otti","medium").
+carsrange("teana","medium").
+carsrange("kicks","medium").
+carsrange("504","medium").
+carsrange("304","medium").
+carsrange("504 (sw)","medium").
+carsrange("604sl","medium").
+carsrange("505s turbo diesel","medium").
+carsrange("fury iii","budget").
+carsrange("cricket","budget").
+carsrange("satellite custom (sw)","budget").
+carsrange("fury gran sedan","budget").
+carsrange("valiant","budget").
+carsrange("duster","budget").
+carsrange("macan","highend").
+carsrange("panamera","highend").
+carsrange("cayenne","highend").
+carsrange("boxter","highend").
+carsrange("12tl","budget").
+carsrange("5 gtl","budget").
+carsrange("99e","medium").
+carsrange("99le","medium").
+carsrange("99gle","medium").
+carsrange("dl","budget").
+carsrange("brz","budget").
+carsrange("baja","budget").
+carsrange("r1","budget").
+carsrange("r2","budget").
+carsrange("trezia","budget").
+carsrange("tribeca","budget").
+carsrange("corona mark ii","budget").
+carsrange("corona","budget").
+carsrange("corolla 1200","budget").
+carsrange("corona hardtop","budget").
+carsrange("corolla 1600 (sw)","budget").
+carsrange("carina","budget").
+carsrange("mark ii","budget").
+carsrange("corolla","budget").
+carsrange("corolla liftback","budget").
+carsrange("celica gt liftback","budget").
+carsrange("corolla tercel","budget").
+carsrange("corona liftback","budget").
+carsrange("starlet","budget").
+carsrange("tercel","budget").
+carsrange("cressida","budget").
+carsrange("celica gt","budget").
+carsrange("rabbit","medium").
+carsrange("1131 deluxe sedan","medium").
+carsrange("model 111","medium").
+carsrange("type 3","medium").
+carsrange("411 (sw)","medium").
+carsrange("super beetle","medium").
+carsrange("dasher","medium").
+carsrange("rabbit custom","medium").
+carsrange("145e (sw)","medium").
+carsrange("144ea","medium").
+carsrange("244dl","medium").
+carsrange("245","medium").
+carsrange("264gl","medium").
+carsrange("diesel","medium").
+carsrange("246","medium").

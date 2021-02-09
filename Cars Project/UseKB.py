@@ -5,35 +5,38 @@ prolog.consult("../data/knowledge_base.pl")
 
 
 def addAssert (prolog, str):
-    #prolog.assertz("fuel(diesel)")
     prolog.assertz(str)
 
 
 def deleteAssert (prolog, str):
-    #prolog.assertz("fuel(diesel)")
     prolog.retract(str)
 
 
 def query (prolog, str):
-    qr = (str +".")
-    #q = list(prolog.query("modRequest(X, Y).")
-    print(qr)
+    qr = (str + ".")
     return list(prolog.query(qr))
 
 
 def fuelSearch():
     a= input("Quale tipologia di carburante ti interessa? ")
     a = a.lower()
-    pippo = ("fuel(" + a + ")")
-    addAssert(prolog, pippo)
-    print(query(prolog, "companyModel(X, Y)"))
-    deleteAssert(prolog, pippo)
+    print(query(prolog, "fuelCar(X,\"" + a + "\")"))
 
 
 def modelSearch():
     a= input("Di quale marca vuoi visualizzare i modelli disponibili? ")
     a = a.lower()
     print(query(prolog, "companyModel(\"" + a + "\", Y)"))
+
+def companySearch():
+    a= input("Di quale modello vuoi sapere la marca? ")
+    a = a.lower()
+    print(query(prolog, "companyModel(X,\"" + a + "\")"))
+
+def budgetSearch():
+    a = input("Quale fascia di prezzo ti interessa (bassa=Budget, media=Medium, alta=Highend)? ")
+    a = a.lower()
+    print(query(prolog, "carsrange(X,\"" + a + "\")"))
 
 
 def modelBodySearch():
@@ -43,9 +46,26 @@ def modelBodySearch():
 
 
 print("########## BENVENUTO ##########")
+answer = input("Area di interesse:\n"
+      "1) CARBURANTE \n"
+      "2) MARCA->MODELLO \n"
+      "3) MODELLO->MARCA \n"
+      "4) TIPOLOGIA\n"
+      "5) BUDGET\n"
+      "X) USCITA\n"
+      "Quale area di interesse visualizzare?: ")
+while answer[0] != ("x") and answer[0] != ("X") :
+    if answer[0] == "1":
+        fuelSearch()
+    elif answer[0] == "2":
+        modelSearch()
+    elif answer[0] == "3":
+        companySearch()
+    elif answer[0] == "4":
+        modelBodySearch()
+    elif answer[0] == "5":
+        budgetSearch()
+    else:
+        print("RISPOSTA ERRATA!")
+    answer = input("Quale area di interesse visualizzare?: ")
 
-#fuelSearch()
-
-#modelSearch()
-
-modelBodySearch()

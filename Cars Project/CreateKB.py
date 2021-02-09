@@ -11,7 +11,6 @@ cars.insert(3, "CompanyName", CompanyName)
 cars.CompanyName = cars.CompanyName.str.lower()
 cars['CarName'] = cars['CarName'].apply(lambda x: ' '.join(x.split(' ')[1:]))
 
-print(cars.info())
 
 file_data = ":- discontiguous companyModel/2.\n\n"
 cars.rename({'CompanyName': 'companyName'}, axis=1, inplace=True)
@@ -29,6 +28,15 @@ replace_name('vokswagen', 'volkswagen')
 replace_name('vw', 'volkswagen')
 replace_name('Nissan', 'nissan')
 
+cars['price'] = cars['price'].astype('int')
+temp = cars.copy()
+table = temp.groupby(['companyName'])['price'].mean()
+temp = temp.merge(table.reset_index(), how='left', on='companyName')
+bins = [0, 10000, 20000, 40000]
+cars_bin = ['budget', 'medium', 'highend']
+cars['carsrange'] = pd.cut(temp['price_y'], bins, right=False, labels=cars_bin)
+
+print(cars.info())
 
 def is_not_blank(s):
     if s and s.strip():
@@ -85,8 +93,17 @@ for row in cars.itertuples():
     if is_not_blank(model) and is_not_blank(carbody) and (string not in file_data):
         file_data += string + "\n"
 
+file_data += "\n"
 
-file_data += "\n" + "companyModel(X, Y) :- fuelCar(X, Y), fuel(Y)."
+# Generating model - carsrange
+for row in cars.itertuples():
+    model = row[3]
+    carsrange = row[28]
+    string = "carsrange(\"" + model + "\",\"" + str(carsrange) + "\")."
+
+    if is_not_blank(model) and (string not in file_data):
+        file_data += string + "\n"
+
 
 
 knowledge_base = open(KNOWLEDGE_BASE_PATH, mode="w")
