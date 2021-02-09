@@ -2,10 +2,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, BayesianRidge
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.metrics import mean_squared_log_error, r2_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
+from statistics import median
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
 cars = pd.read_csv('../data/CarPrice.csv')
@@ -80,50 +81,64 @@ X_test = ss.transform(X_test)
 def try_model(model, parameters, X_train, Y_train, X_test, Y_test):
     mod = GridSearchCV(model, parameters, cv=None)
     mod.fit(X_train, Y_train)
-    Y_pred_test = mod.predict(X_test)
-    Y_pred_train_test = mod.predict(X_train)
-
-    print("\nMean squared log error test: ", mean_squared_log_error(Y_test, Y_pred_test))
-    print("\nRegression score pred test: ", r2_score(Y_test, Y_pred_test))
-
-    print("\nMean squared log error train: ", mean_squared_log_error(Y_train, Y_pred_train_test))
-    print("\nRegression score pred train: ", r2_score(Y_train, Y_pred_train_test))
-
-    # EVALUATION OF THE MODEL
-    # Plotting y_test and y_pred to understand the spread.
-    fig = plt.figure()
-    plt.scatter(Y_test, Y_pred_test)
-    fig.suptitle('y_test vs y_pred', fontsize=20)  # Plot heading
-    plt.xlabel('y_test', fontsize=18)  # X-label
-    plt.ylabel('y_pred', fontsize=16)
-    plt.show()
-
+    return mod
 
 parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
-print("\nRegressione Lineare")
-try_model(LinearRegression(), parameters, X_train, Y_train, X_test, Y_test)
-
-parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
-              'precompute': [True, False], 'max_iter': [i for i in range(1000, 10000, 500)],
-              'warm_start': [True, False],
-              'positive': [True, False], 'selection': ['cyclic', 'random']}
-print("\n\nModello Lasso")
-try_model(Lasso(), parameters, X_train, Y_train, X_test, Y_test)
-
-parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
-              'max_iter': [i for i in range(1000, 10000, 500)],
-              'solver': ['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']}
-print("\n\nModello Ridge")
-try_model(Ridge(), parameters, X_train, Y_train, X_test, Y_test)
-
-parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False],
-              'n_iter': [i for i in range(300, 2000, 100)], 'compute_score': [True, False]}
-print("\n\nModello Bayesiano")
-try_model(BayesianRidge(), parameters, X_train, Y_train, X_test, Y_test)
-
-parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
-print("\n\nRegressione Polinomiale di grado ", 2)
 polyfeats = PolynomialFeatures(degree=2)
 X_train_poly = polyfeats.fit_transform(X_train)
 X_test_poly = polyfeats.transform(X_test)
-try_model(LinearRegression(), parameters, X_train_poly, Y_train, X_test_poly, Y_test)
+mod = try_model(LinearRegression(), parameters, X_train_poly, Y_train, X_test_poly, Y_test)
+
+
+def valore_nullo(feature, a, min, max):
+    if feature == "":
+        print("VALORE NON INSERITO --- E' STATO INSERITO VALORE MEDIANA")
+        feature = median(a)
+    elif float(feature) < min or float(feature) > max:
+        print("VALORE NON VALIDO --- E' STATO INSERITO VALORE MEDIANA")
+        feature = median(a)
+    return feature
+
+
+# Acquisizione features in input
+print("\n-------------  FEATURES PER LA PREDIZIONE DEL PREZZO DELLA MACCHINA --------------")
+
+print("\nInserire il peso della macchina in Kg (MIN:1488 Kg, MAX:4066 Kg)")
+curbweight = valore_nullo(input(), cars_lr["curbweight"].values, 1488, 4066)
+print("----------------------------------------------------------------------------------")
+
+print("\nInserire la dimensione del motore in cc (MIN:61 cc, MAX:326 cc)")
+enginesize = valore_nullo(input(), cars_lr["enginesize"].values, 61, 326)
+print("----------------------------------------------------------------------------------")
+
+print("\nInserire la potenza dei cavalli in kW (MIN:48 kW, MAX:288 kW)")
+horsepower = valore_nullo(input(), cars_lr["horsepower"].values, 48, 288)
+print("----------------------------------------------------------------------------------")
+
+print("\nInserire la larghezza della macchina in pollici (MIN:60 pollici, MAX:72 pollici)")
+carwidth = valore_nullo(input(), cars_lr["carwidth"].values, 60, 72)
+
+highend = 0 #valore della mediana
+
+X_user = np.array([curbweight, enginesize, horsepower, carwidth, highend])
+X_user = X_user.reshape(1, -1)
+X_user = ss.transform(X_user)
+X_user = polyfeats.transform(X_user)
+predict = mod.predict(X_user)
+
+print("\n")
+print("+---------------------------------------------------------------------------+")
+print("|                        PREDIZIONE PREZZO AUTO                             |")
+print("+---------------------------------------------------------------------------+")
+print("| curbweight ---> ", curbweight)
+print("+---------------------------------------------------------------------------+")
+print("| enginesize ---> ", enginesize)
+print("+---------------------------------------------------------------------------+")
+print("| horsepower ---> ", horsepower)
+print("+---------------------------------------------------------------------------+")
+print("| carwidth ---> ", carwidth)
+print("+---------------------------------------------------------------------------+")
+print("| highend ---> ", highend)
+print("+---------------------------------------------------------------------------+")
+print("| PRICE ---> ", round(predict[0], 2))
+print("+---------------------------------------------------------------------------+")
