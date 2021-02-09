@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 KNOWLEDGE_BASE_PATH = "./../data/knowledge_base.pl"
 
@@ -10,7 +10,6 @@ CompanyName = cars['CarName'].apply(lambda x: x.split(' ')[0])
 cars.insert(3, "CompanyName", CompanyName)
 cars.CompanyName = cars.CompanyName.str.lower()
 cars['CarName'] = cars['CarName'].apply(lambda x: ' '.join(x.split(' ')[1:]))
-
 
 file_data = ":- discontiguous companyModel/2.\n\n"
 cars.rename({'CompanyName': 'companyName'}, axis=1, inplace=True)
@@ -36,7 +35,6 @@ bins = [0, 10000, 20000, 40000]
 cars_bin = ['budget', 'medium', 'highend']
 cars['carsrange'] = pd.cut(temp['price_y'], bins, right=False, labels=cars_bin)
 
-print(cars.info())
 
 def is_not_blank(s):
     if s and s.strip():
@@ -49,14 +47,12 @@ for string in np.unique(cars['companyName']):
     if is_not_blank(string):
         file_data += "company(\"" + string + "\").\n"
 
-
 file_data += "\n"
 
 # Generating fuelType
 for string in np.unique(cars['fueltype']):
     if is_not_blank(string):
         file_data += "fuelType(\"" + string + "\").\n"
-
 
 file_data += "\n"
 
@@ -69,7 +65,6 @@ for row in cars.itertuples():
     if is_not_blank(model) and is_not_blank(fuel) and (string not in file_data):
         file_data += string + "\n"
 
-
 file_data += "\n"
 
 # Generating company - model
@@ -80,7 +75,6 @@ for row in cars.itertuples():
 
     if is_not_blank(company) and is_not_blank(model) and (string not in file_data):
         file_data += string + "\n"
-
 
 file_data += "\n"
 
@@ -103,8 +97,6 @@ for row in cars.itertuples():
 
     if is_not_blank(model) and (string not in file_data):
         file_data += string + "\n"
-
-
 
 knowledge_base = open(KNOWLEDGE_BASE_PATH, mode="w")
 knowledge_base.write(file_data)
