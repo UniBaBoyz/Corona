@@ -36,8 +36,16 @@ def companySearch():
 
 
 def budgetSearch():
-    a = input("Quale fascia di prezzo ti interessa (bassa=Budget, media=Medium, alta=Highend)? ")
+    a = input("Quale fascia di prezzo di marca ti interessa (bassa/media/alta)? ")
     a = a.lower()
+    if a == "bassa":
+        a = "budget"
+    elif a == "media":
+        a = "medium"
+    elif a == "alta":
+        a = "highend"
+    else:
+        print("Scelta errata")
     print(query(prolog, "carsrange(X,\"" + a + "\")"))
 
 

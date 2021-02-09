@@ -91,11 +91,11 @@ file_data += "\n"
 
 # Generating model - carsrange
 for row in cars.itertuples():
-    model = row[3]
+    company = row[4]
     carsrange = row[28]
-    string = "carsrange(\"" + model + "\",\"" + str(carsrange) + "\")."
+    string = "carsrange(\"" + company + "\",\"" + str(carsrange) + "\")."
 
-    if is_not_blank(model) and (string not in file_data):
+    if is_not_blank(company) and (string not in file_data):
         file_data += string + "\n"
 
 knowledge_base = open(KNOWLEDGE_BASE_PATH, mode="w")
