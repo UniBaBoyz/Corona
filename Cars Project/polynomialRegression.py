@@ -1,12 +1,11 @@
 # importing the libraries
-import matplotlib.pyplot as plt
+from statistics import median
+
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
-from sklearn.metrics import mean_squared_log_error, r2_score
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
-from statistics import median
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
 cars = pd.read_csv('../data/CarPrice.csv')
@@ -78,6 +77,7 @@ ss = StandardScaler()
 X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
+
 def try_model(model, parameters, X_train, Y_train, X_test, Y_test):
     mod = GridSearchCV(model, parameters, cv=None)
     mod.fit(X_train, Y_train)
@@ -140,7 +140,7 @@ for row in cars[["CompanyName", "carsrange"]].values:
     carsrange = str(row[1])
 
     if companyname == company:
-        if(carsrange=="Highend"):
+        if (carsrange == "Highend"):
             highend = 1
         else:
             highend = 0

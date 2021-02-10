@@ -1,7 +1,7 @@
 from pyswip import Prolog
 
 prolog = Prolog()
-prolog.consult("../data/knowledge_base.pl")
+prolog.consult("../data/knowledgeBase.pl")
 
 
 def addAssert(prolog, str):

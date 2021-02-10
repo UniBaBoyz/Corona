@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-KNOWLEDGE_BASE_PATH = "./../data/knowledge_base.pl"
+KNOWLEDGE_BASE_PATH = "../data/knowledgeBase.pl"
 
 cars = pd.read_csv('../data/CarPrice.csv')
 
