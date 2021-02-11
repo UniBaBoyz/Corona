@@ -5,7 +5,7 @@
 1. [Introduzione](#1-introduzione)
 2. [Struttura Progetto](#2-struttura-progetto)
 3. [Requisiti Per Eseguire Il Progetto](#3-requisiti-per-eseguire-il-progetto)
-4. [Sviluppi Futuri](#4sviluppi-futuri)
+4. [Sviluppi Futuri](#4-sviluppi-futuri)
 
 ## 1. Introduzione
 
