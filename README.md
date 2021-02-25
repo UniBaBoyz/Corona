@@ -32,6 +32,7 @@ Il progetto è strutturato nel seguente modo:
 |    |–– knowledgeBase.pl
 |–– .gitignore
 |-- Documentazione.pdf
+|-- SoddisfazioneDeiCriteriRichiesti.pdf
 |–– README.md
 |–– requirements.txt
 ```
@@ -44,6 +45,7 @@ Nel seguito si dettagliano i ruoli dei diversi componenti:
   - **useKB.py** file sorgente utilizzato per interfacciarsi con la *KB*, in particolar modo questo file utilizza la base di conoscenza che si trova nel percorso `data/knowledgeBase.pl` per rispondere alle domande dell'utente;
 - **.gitignore**: file che specifica tutti i file che devono essere esclusi dal sistema di controllo versione;
 - **Documentazione.pdf**: documentazione del caso di studio;
+- **SoddisfazioneDeiCriteriRichiesti.pdf**: presentazione del caso di studio sui criteri utilizzati;
 - **requirements.txt**: file utilizzato per specificare le librerie necessarie per costruire il `virtual enviroment (venv)` per poter eseguire il progetto.
 
 ## 3. Requisiti Per Eseguire Il Progetto
